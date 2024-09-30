@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Surfer",
+  "version": "1.0",
+  "description": "Surfer allows you to export your personal data from various platforms. All data is saved locally and never shared with anyone.",
+  "permissions": [
+    "scripting",
+    "downloads",
+    "storage",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:5173/*",
+      "http://localhost:5174/*",
+      "http://localhost:5175/*",
+      "https://fft.web.app/*",
+      "http://fft.web.app/*",
+      "https://foodforthought.site/*"
+    ]
+  }
+}
+ 
