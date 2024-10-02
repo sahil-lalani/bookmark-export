@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Surfer",
+  "name": "Twitter Bookmark Exporter",
   "version": "1.0",
-  "description": "Surfer allows you to export your personal data from various platforms. All data is saved locally and never shared with anyone.",
+  "description": "Twitter Bookmark Exporter allows you to export your bookmarks from Twitter to a JSON file.",
   "permissions": [
     "scripting",
     "downloads",

@@ -81,10 +81,10 @@ const getBookmarks = async (cursor = "", totalImported = 0, allTweets = []) => {
           const tweetEntries = entries.filter((entry) =>
             entry.entryId.startsWith("tweet-")
           );
-          console.log("tweetEntries", tweetEntries);
+          console.log("Raw Tweets", tweetEntries);
           
           const parsedTweets = tweetEntries.map(parseTweet);
-          console.log("parsedTweets", parsedTweets);
+          console.log("Parsed Tweets", parsedTweets);
           allTweets = allTweets.concat(parsedTweets);
           
           const newTweetsCount = parsedTweets.length;
@@ -100,73 +100,35 @@ const getBookmarks = async (cursor = "", totalImported = 0, allTweets = []) => {
             await getBookmarks(nextCursor, totalImported, allTweets);
           } else {
             console.log("Import completed. Total imported:", totalImported);
-            // Store the tweets in local storage
-            chrome.storage.local.set({ bookmarks: allTweets }, () => {
-              console.log("Bookmarks stored in local storage");
+            console.log("All imported tweets:", allTweets);
+            
+            // Create and download JSON file
+            const timestamp = Date.now();
+            const fileName = `bookmarks_${timestamp}.json`;
+            const jsonContent = JSON.stringify(allTweets, null, 2);
+            
+            const dataUrl = `data:application/json;charset=utf-8,${encodeURIComponent(jsonContent)}`;
+            
+            chrome.downloads.download({
+              url: dataUrl,
+              filename: fileName, 
+              saveAs: true
+            }, (downloadId) => {
+              if (chrome.runtime.lastError) {
+                console.error("Error downloading file:", chrome.runtime.lastError);
+              } else {
+                console.log("File downloaded successfully. Download ID:", downloadId);
+              }
             });
-            const timestamp = new Date().toISOString();
-            chrome.storage.local.get(["successful_exports"], (result) => {
-              const successful_exports = result.successful_exports || [];
-              successful_exports.push({ timestamp, tweetCount: allTweets.length });
-              chrome.storage.local.set({ successful_exports }, () => {
-                console.log(
-                  `Stored successful export: ${timestamp}, ${allTweets.length} tweets`
-                );
-              });
-            });
-            await sendImportDoneMessage(totalImported, allTweets);
           }
         } catch (error) {
           console.error("Error fetching bookmarks:", error);
 
-          await sendImportDoneMessage(totalImported, allTweets);
         }
       });
     }
   );
 }
-
-const checkAndExportIfNeeded = async () => {
-  console.log("Checking if export is needed...");
-  
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['successful_exports', 'bookmarks'], async (result) => {
-      const successful_exports = result.successful_exports || [];
-      const bookmarks = result.bookmarks || [];
-      
-      console.log("Successful exports:", successful_exports);
-      console.log("Bookmarks in storage:", bookmarks.length);
-
-      if (bookmarks.length === 0) {
-        console.log("No bookmarks in storage, skipping export.");
-        return resolve(true);
-      }
-
-      const today = new Date().toISOString().split('T')[0];
-      const todayExport = successful_exports.find(exp => exp.timestamp.startsWith(today));
-      console.log("todayExport", todayExport);
-      
-      if (todayExport) {
-        console.log(`Already exported today: ${todayExport.tweetCount} tweets`);
-        resolve(true);
-      } else {
-        console.log("No export today, initiating new export.");
-        
-        // Wait for required data before calling getBookmarks
-        await waitForRequiredData(); 
-        await getBookmarks();
-        
-        resolve(false);
-      }
-    });
-  });
-}
-
-// Run on extension startup
-chrome.runtime.onStartup.addListener(() => {
-  console.log('Extension started. Checking if export is needed.');
-  checkAndExportIfNeeded();
-});
 
 const parseTweet = (entry) => {
   const tweet = entry.content?.itemContent?.tweet_results?.result?.tweet || entry.content?.itemContent?.tweet_results?.result;
@@ -221,13 +183,6 @@ const getNextCursor = (entries) => {
   const cursorEntry = entries.find(entry => entry.entryId.startsWith("cursor-bottom-"));
   return cursorEntry ? cursorEntry.content.value : null;
 };
-
-const sendImportDoneMessage = async (totalImported, allTweets) => {
-  console.log("Import completed. Total imported:", totalImported);
-  console.log("All imported tweets:", allTweets);
-  // Add any additional logic for when the import is done
-  // For example, you might want to send a message to the popup or content script
-}
 
 const waitForRequiredData = () => {
   return new Promise((resolve) => {
@@ -305,54 +260,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
         });
       }
     });
-    // chrome.storage.local.get(["twitterBookmarks"], (result) => {
-    // 	console.log("twitterBookmarks", result.twitterBookmarks);
-    // 	if (result.twitterBookmarks !== "true") {
-    // 		console.log("twitterBookmarks is NOT true");
-    // 	} else {
-    // 		if (
-    // 			!details.requestHeaders ||
-    // 			details.requestHeaders.length === 0 ||
-    // 			details.requestHeaders === undefined
-    // 		) {
-    // 			return;
-    // 		}
-
-    // 		// Check cache first
-    // 		chrome.storage.local.get(["lastFetch", "cachedData"], (result) => {
-    // 			const now = new Date().getTime();
-    // 			if (result.lastFetch && now - result.lastFetch < 30 * 60 * 1000) {
-    // 				// Cached data is less than 30 minutes old, use it
-    // 				console.log("Using cached data");
-    // 				console.log(result.cachedData);
-    // 				return;
-    // 			}
-
-    // 			// No valid cache, proceed to fetch
-    // 			const authHeader = details.requestHeaders?.find(
-    // 				(header) => header.name.toLowerCase() === "authorization",
-    // 			);
-    // 			const auth = authHeader ? authHeader.value : "";
-
-    // 			const cookieHeader = details.requestHeaders?.find(
-    // 				(header) => header.name.toLowerCase() === "cookie",
-    // 			);
-    // 			const cookie = cookieHeader ? cookieHeader.value : "";
-
-    // 			const csrfHeader = details.requestHeaders?.find(
-    // 				(header) => header.name.toLowerCase() === "x-csrf-token",
-    // 			);
-    // 			const csrf = csrfHeader ? csrfHeader.value : "";
-
-    // 			if (!auth || !cookie || !csrf) {
-    // 				console.log("auth, cookie, or csrf is missing");
-    // 				return;
-    // 			}
-    // 			chrome.storage.local.set({ cookie, csrf, auth });
-    // 		});
-    // 		return;
-    // 	}
-    // });
   },
   { urls: ["*://x.com/*", "*://twitter.com/*"] },
   ["requestHeaders", "extraHeaders"]
