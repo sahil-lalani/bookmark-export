@@ -1,10 +1,10 @@
-# Twitter Bookmark Exporter
+# X Bookmark Exporter
 
-Twitter Bookmark Exporter is a Chrome extension that allows you to export your bookmarks from Twitter (now X) to a JSON file.
+X Bookmark Exporter is a Chrome extension that allows you to export your bookmarks from X (formerly Twitter, Inc.) to a JSON file.
 
 ## Features
 
-- Export all your Twitter bookmarks with a single click
+- Export all your X bookmarks with a single click
 - Saves bookmarks as a JSON file
 - Includes tweet text, timestamp, and media information
 - Handles pagination to fetch all bookmarks
@@ -20,7 +20,7 @@ Twitter Bookmark Exporter is a Chrome extension that allows you to export your b
 
 1. Click on the extension icon in your Chrome toolbar to open the popup.
 2. Click the "Export Bookmarks" button.
-3. The extension will open a new tab to Twitter's bookmarks page.
+3. The extension will open a new tab to X's bookmarks page.
 4. Wait for the export process to complete. The status will be shown in the popup.
 5. Once finished, a JSON file containing your bookmarks will be downloaded automatically.
 
@@ -58,4 +58,4 @@ MIT License
 
 ## Disclaimer
 
-This extension is not affiliated with, endorsed, or sponsored by Twitter, Inc. Use at your own risk.
+This extension is not affiliated with, endorsed, or sponsored by X Corp., or X Holdings Corp. Use at your own risk.
