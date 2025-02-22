@@ -1,56 +1,67 @@
-# Twitter Bookmark Exporter
+# Twitter/X Bookmark Exporter
 
-Twitter Bookmark Exporter is a Chrome extension that allows you to export your bookmarks from Twitter (now X) to a JSON file.
+Twitter/X Bookmark Exporter is a browser extension that allows you to export all your bookmarks from Twitter (now X) to a JSON file. Originally developed for Chrome, it has been adapted for Firefox using Manifest V3.
 
 ## Features
 
-- Export all your Twitter bookmarks with a single click
-- Saves bookmarks as a JSON file
+- Export all your Twitter/X bookmarks with a single click
+- Saves bookmarks as a plain JSON file
 - Includes tweet text, timestamp, and media information
-- Handles pagination to fetch all bookmarks
+- Handles pagination to fetch all bookmarks automatically
 
 ## Installation
 
-1. Clone this repository or download the source code.
-2. Open Chrome and navigate to `chrome://extensions/`.
-3. Enable "Developer mode" in the top right corner.
-4. Click "Load unpacked" and select the directory containing the extension files.
+1. Clone this repository or download the source code from GitHub.
+2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
+3. Click "Load Temporary Add-on" and select any file in the extension directory (e.g., `manifest.json`).
 
 ## Usage
 
-1. Click on the extension icon in your Chrome toolbar to open the popup.
-2. Click the "Export Bookmarks" button.
-3. The extension will open a new tab to Twitter's bookmarks page.
-4. Wait for the export process to complete. The status will be shown in the popup.
-5. Once finished, a JSON file containing your bookmarks will be downloaded automatically.
+1. Click the extension icon in your Firefox toolbar to open the popup.
+2. Click "Export Bookmarks".
+3. A new tab will open to `https://x.com/i/bookmarks/all`.
+4. Wait for the export to complete—status updates will appear in the popup.
+5. Once finished, a JSON file (`bookmarks_[timestamp].json`) will download automatically.
 
 ## File Structure
 
-- `manifest.json`: Extension configuration
-- `popup.html`: HTML for the extension popup
-- `popup.js`: JavaScript for the popup functionality
-- `background.js`: Background script for handling bookmark export
+- `manifest.json`: Extension configuration (Manifest V3)
+- `popup.html`: Popup UI
+- `popup.js`: Popup logic
+- `background.js`: Background script for fetching and exporting bookmarks
 
 ## Permissions
 
-This extension requires the following permissions:
-
-- `scripting`: To interact with web pages
-- `downloads`: To save the exported bookmarks file
-- `storage`: To store necessary data locally
-- `webRequest`: To intercept and handle web requests
+- `"storage"`: Stores authentication data and API IDs
+- `"webRequest"`: Captures headers from X requests
+- `"downloads"`: Saves the JSON file
+- `"host_permissions": ["*://x.com/*", "*://twitter.com/*"]`: Access to X/Twitter domains
 
 ## Development
 
 To modify or extend this extension:
+1. Update `manifest.json` for new permissions or features.
+2. Edit `popup.html` and `popup.js` for UI changes.
+3. Modify `background.js` for export logic adjustments.
 
-1. Update the manifest.json file for any new permissions or features.
-2. Modify popup.html and popup.js for changes to the user interface.
-3. Edit background.js to alter the bookmark fetching and processing logic.
+## Security Notes
+
+- This extension uses an undocumented X API, which may violate X's Terms of Service—use at your own risk.
+- No data is encrypted; bookmarks are saved as plain JSON.
+- Authentication data (cookies, tokens) is stored in session storage and could be accessed by other extensions with `"storage"` permission.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Fork the repository and submit a Pull Request.
+
+## Authors
+
+- **Original Author**: Sahil Lalani (sahil-lalani)
+- **Contributors**:
+  - John M. Kenny (john-m-kenny)
+  - Grok 3 beta, xAI (created by xAI)
+
+**Date**: February 22, 2025
 
 ## License
 
@@ -58,4 +69,4 @@ MIT License
 
 ## Disclaimer
 
-This extension is not affiliated with, endorsed, or sponsored by Twitter, Inc. Use at your own risk.
+This extension is not affiliated with, endorsed, or sponsored by Twitter, Inc. or X Corp. It uses an undocumented API and may stop working if X changes its backend.

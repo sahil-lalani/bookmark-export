@@ -1,32 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "Twitter Bookmark Exporter",
+  "name": "twitter/x bookmark exporter",
   "version": "1.0",
-  "description": "Twitter Bookmark Exporter allows you to export your bookmarks from Twitter to a JSON file.",
+  "description": "export your twitter/x bookmarks to a json file.",
   "permissions": [
-    "scripting",
-    "downloads",
     "storage",
-    "webRequest"
+    "webRequest",
+    "downloads"
   ],
   "host_permissions": [
-    "*://*/*"
+    "*://x.com/*",
+    "*://twitter.com/*"
   ],
   "action": {
     "default_popup": "popup.html"
   },
   "background": {
-    "service_worker": "background.js"
-  },
-  "externally_connectable": {
-    "matches": [
-      "http://localhost:5173/*",
-      "http://localhost:5174/*",
-      "http://localhost:5175/*",
-      "https://fft.web.app/*",
-      "http://fft.web.app/*",
-      "https://foodforthought.site/*"
-    ]
+    "scripts": ["background.js"]
   }
 }
- 
